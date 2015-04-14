@@ -14,7 +14,7 @@
 
     <build>
         <defaultGoal>clean package install</defaultGoal>
-        <finalName>CratesPlus-${project.version}</finalName>
+        <finalName>BackupManager-${project.version}</finalName>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <resources>
             <resource>
