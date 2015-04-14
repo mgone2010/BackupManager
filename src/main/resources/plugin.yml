@@ -1,0 +1,4 @@
+name: BackupManager
+description: A free plugin to help you backup your worlds and server
+main: com.connorlinfoot.backupmanager.BackupManager
+version: ${project.version}
