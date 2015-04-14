@@ -26,17 +26,6 @@ public class BackupManager extends JavaPlugin implements Listener {
 
         advancedLogs = getConfig().getBoolean("Advanced Logs");
         location = getConfig().getString("Backup Location") + "/";
-        if (getConfig().getBoolean("Backup On.Server Start")) {
-            backupWorlds(console);
-        }
-
-        if (getConfig().getBoolean("Backup On.Every 15 Minutes")) {
-            Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
-                public void run() {
-                    backupWorlds(console);
-                }
-            }, (20 * 60) * 15l, (20 * 60) * 15l);
-        }
 
 //        if (!getConfig().getBoolean("Update Checks")) {
 //            getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
@@ -56,9 +45,22 @@ public class BackupManager extends JavaPlugin implements Listener {
         console.sendMessage("");
         console.sendMessage(ChatColor.BLUE + "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
         console.sendMessage("");
+
+        if (getConfig().getBoolean("Backup On.Server Start")) {
+            backupWorlds(console);
+        }
+
+        if (getConfig().getBoolean("Backup On.Every 15 Minutes")) {
+            Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
+                public void run() {
+                    backupWorlds(console);
+                }
+            }, (20 * 60) * 15l, (20 * 60) * 15l);
+        }
     }
 
     private void backupWorlds(ConsoleCommandSender console) {
+        console.sendMessage(ChatColor.GREEN + "Starting world backups...");
         for (World world : Bukkit.getWorlds()) {
             world.save();
             boolean as = false;
@@ -75,6 +77,7 @@ public class BackupManager extends JavaPlugin implements Listener {
             }
             console.sendMessage(ChatColor.GREEN + "Backed up " + world.getName());
         }
+        console.sendMessage(ChatColor.GREEN + "World backups completed");
     }
 
     public static BackupManager getPlugin() {
