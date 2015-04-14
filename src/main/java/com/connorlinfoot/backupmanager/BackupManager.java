@@ -16,6 +16,7 @@ public class BackupManager extends JavaPlugin implements Listener {
     public static String updateMessage = "";
     public static boolean advancedLogs = false;
     public static String location = "backups/";
+    public static String buildNo = "${build.number}";
     public static String pluginPrefix = ChatColor.GRAY + "[" + ChatColor.AQUA + "BackupManager" + ChatColor.GRAY + "] " + ChatColor.RESET;
 
     public void onEnable() {
@@ -27,21 +28,21 @@ public class BackupManager extends JavaPlugin implements Listener {
         advancedLogs = getConfig().getBoolean("Advanced Logs");
         location = getConfig().getString("Backup Location") + "/";
 
-//        if (!getConfig().getBoolean("Update Checks")) {
-//            getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
-//                public void run() {
-//                    checkUpdate(console,
-//                            getConfig().getString("Update Branch"),
-//                            getConfig().getBoolean("Auto Update"));
-//                }
-//            }, 10L);
-//        }
+        if (!getConfig().getBoolean("Update Checks")) {
+            getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
+                public void run() {
+                    checkUpdate(console,
+                            getConfig().getString("Update Branch"),
+                            getConfig().getBoolean("Auto Update"));
+                }
+            }, 10L);
+        }
 
         console.sendMessage("");
         console.sendMessage(ChatColor.BLUE + "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
         console.sendMessage("");
         console.sendMessage(ChatColor.AQUA + getDescription().getName());
-        console.sendMessage(ChatColor.AQUA + "Version " + getDescription().getVersion());
+        console.sendMessage(ChatColor.AQUA + "Version " + getDescription().getVersion() + " Build " + buildNo);
         console.sendMessage("");
         console.sendMessage(ChatColor.BLUE + "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
         console.sendMessage("");
@@ -87,9 +88,11 @@ public class BackupManager extends JavaPlugin implements Listener {
     private void checkUpdate(final ConsoleCommandSender console, final String branch, final boolean install) {
         if (branch.equalsIgnoreCase("nightly")) {
             console.sendMessage(ChatColor.GREEN + "Oh, nightly builds? You're brave...");
-
+            console.sendMessage(ChatColor.RED + "Uh oh, nightly builds are not yet support. Sorry :(");
         } else if (branch.equalsIgnoreCase("spigot")) {
             console.sendMessage(ChatColor.GREEN + "Checking for updates via Spigot...");
+            console.sendMessage(ChatColor.RED + "Uh oh, this plugin isn't on Spigot yet. Sorry :(");
+            if (true) return;
             final Updater updater = new Updater(this, 5018, false);
             final Updater.UpdateResult result = updater.getResult();
             switch (result) {

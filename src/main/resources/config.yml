@@ -2,6 +2,10 @@
 #  BackupManager V${project.version}
 # [][][][][][][][][][][][][][][][][][][][][]
 
+Update Checks: true
+Auto Update: true
+Update Branch: nightly
+
 Advanced Logs: false
 Backup Location: "backups"
 Backup On:
