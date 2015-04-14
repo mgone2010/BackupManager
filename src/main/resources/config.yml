@@ -1,0 +1,6 @@
+# [][][][][][][][][][][][][][][][][][][][][]
+#  BackupManager V${project.version}
+# [][][][][][][][][][][][][][][][][][][][][]
+
+Advanced Logs: false
+Backup Location: /backupmanager

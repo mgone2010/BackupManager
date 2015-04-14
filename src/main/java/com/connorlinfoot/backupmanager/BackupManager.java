@@ -1,7 +1,9 @@
 package com.connorlinfoot.backupmanager;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,6 +12,7 @@ public class BackupManager extends JavaPlugin implements Listener {
     private static BackupManager instance;
     public static boolean updateAvailable = false;
     public static String updateMessage = "";
+    public static boolean advancedLogs = false;
     public static String pluginPrefix = ChatColor.GRAY + "[" + ChatColor.AQUA + "BackupManager" + ChatColor.GRAY + "] " + ChatColor.RESET;
 
     public void onEnable() {
@@ -19,15 +22,24 @@ public class BackupManager extends JavaPlugin implements Listener {
         getConfig().options().copyDefaults(true);
         saveConfig();
 
-        if (!getConfig().getBoolean("Update Checks")) {
-            getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
-                public void run() {
-                    checkUpdate(console,
-                            getConfig().getString("Update Branch"),
-                            getConfig().getBoolean("Auto Update"));
-                }
-            }, 10L);
+        advancedLogs = getConfig().getBoolean("Advanced Logs");
+
+        // Backup all worlds
+        for (World world : Bukkit.getWorlds()) {
+            ZIPManager zipManager = new ZIPManager("/backups/test.zip", world.getName());
+            zipManager.doZip();
+            console.sendMessage(ChatColor.GREEN + "Backed up " + world.getName());
         }
+
+//        if (!getConfig().getBoolean("Update Checks")) {
+//            getServer().getScheduler().runTaskLaterAsynchronously(this, new Runnable() {
+//                public void run() {
+//                    checkUpdate(console,
+//                            getConfig().getString("Update Branch"),
+//                            getConfig().getBoolean("Auto Update"));
+//                }
+//            }, 10L);
+//        }
 
         console.sendMessage("");
         console.sendMessage(ChatColor.BLUE + "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
