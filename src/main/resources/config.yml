@@ -3,4 +3,7 @@
 # [][][][][][][][][][][][][][][][][][][][][]
 
 Advanced Logs: false
-Backup Location: /backupmanager
+Backup Location: "backups"
+Backup On:
+  Server Start: true
+  Every 15 Minutes: true

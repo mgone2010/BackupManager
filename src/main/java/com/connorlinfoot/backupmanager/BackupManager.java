@@ -2,33 +2,40 @@ package com.connorlinfoot.backupmanager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.util.Date;
 
 public class BackupManager extends JavaPlugin implements Listener {
     private static BackupManager instance;
     public static boolean updateAvailable = false;
     public static String updateMessage = "";
     public static boolean advancedLogs = false;
+    public static String location = "backups/";
     public static String pluginPrefix = ChatColor.GRAY + "[" + ChatColor.AQUA + "BackupManager" + ChatColor.GRAY + "] " + ChatColor.RESET;
 
     public void onEnable() {
         instance = this;
-        Server server = getServer();
-        final ConsoleCommandSender console = server.getConsoleSender();
+        final ConsoleCommandSender console = getServer().getConsoleSender();
         getConfig().options().copyDefaults(true);
         saveConfig();
 
         advancedLogs = getConfig().getBoolean("Advanced Logs");
+        location = getConfig().getString("Backup Location") + "/";
+        if (getConfig().getBoolean("Backup On.Server Start")) {
+            backupWorlds(console);
+        }
 
-        // Backup all worlds
-        for (World world : Bukkit.getWorlds()) {
-            ZIPManager zipManager = new ZIPManager("/backups/test.zip", world.getName());
-            zipManager.doZip();
-            console.sendMessage(ChatColor.GREEN + "Backed up " + world.getName());
+        if (getConfig().getBoolean("Backup On.Every 15 Minutes")) {
+            Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
+                public void run() {
+                    backupWorlds(console);
+                }
+            }, (20 * 60) * 15l, (20 * 60) * 15l);
         }
 
 //        if (!getConfig().getBoolean("Update Checks")) {
@@ -49,6 +56,25 @@ public class BackupManager extends JavaPlugin implements Listener {
         console.sendMessage("");
         console.sendMessage(ChatColor.BLUE + "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
         console.sendMessage("");
+    }
+
+    private void backupWorlds(ConsoleCommandSender console) {
+        for (World world : Bukkit.getWorlds()) {
+            world.save();
+            boolean as = false;
+            if (world.isAutoSave()) {
+                as = true;
+                world.setAutoSave(false);
+            }
+            Date date = new Date(System.currentTimeMillis());
+            new File(location).mkdirs();
+            ZIPManager zipManager = new ZIPManager(location + world.getName() + "_" + date.toString().replaceAll(" ", "_") + "_" + date.getTime() + ".zip", "logs");
+            zipManager.doZip();
+            if (as) {
+                world.setAutoSave(true);
+            }
+            console.sendMessage(ChatColor.GREEN + "Backed up " + world.getName());
+        }
     }
 
     public static BackupManager getPlugin() {
