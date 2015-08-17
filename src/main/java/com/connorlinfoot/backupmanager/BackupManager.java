@@ -51,6 +51,14 @@ public class BackupManager extends JavaPlugin implements Listener {
                 }
             }, (20 * 60) * 15l, (20 * 60) * 15l);
         }
+
+        if (getConfig().getBoolean("Backup On.Every Day")) {
+            Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
+                public void run() {
+                    backupWorlds(console);
+                }
+            }, (24 * (60 * 60)) * 20L, (24 * (60 * 60)) * 20L);
+        }
     }
 
     private void backupWorlds(ConsoleCommandSender console) {

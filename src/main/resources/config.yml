@@ -6,7 +6,8 @@ Advanced Logs: false
 Backup Location: "backups"
 Backup On:
   Server Start: true
-  Every 15 Minutes: true
+  Every 15 Minutes: false
+  Every Day: false
 FTP Backup:
   Enabled: false
   FTP Host: 127.0.0.1
